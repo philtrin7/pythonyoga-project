@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'fastparcel.urls'
@@ -137,8 +138,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_FACEBOOK_KEY = "4396070737079878"
-SOCIAL_AUTH_FACEBOOK_SECRET = "847effb253fce9daf8fb1d33f4ba92c1"
+SOCIAL_AUTH_FACEBOOK_KEY = "544745680203048"
+SOCIAL_AUTH_FACEBOOK_SECRET = "f93bc07943543fb03d83860a90807eac"
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
