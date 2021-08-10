@@ -27,6 +27,8 @@
                 Already have an account?
                 <a href="/sign-in/?next={{ request.GET.next }}"><b>Sign In</b></a>
               </p>
+              <hr>
+              <a href="{% url 'social:begin' 'facebook' %}?next={{ request.GET.next }}" class="btn btn-outline-primary btn-block">Sign In with Facebook</a>
             </form>
           </div>
         </div>
