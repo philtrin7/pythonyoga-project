@@ -60,7 +60,7 @@
 
             <div id="recaptcha-container"></div>
 
-            <div id="get-code" class="input-group mb-3">
+            <div id="get-code" class="input-group mb-3 {% if request.user.customer.phone_number %} d-none {% endif %}">
                 <input type="text" class="form-control" placeholder="Your phone number">
                 <div class="input-group-append">
                     <button class="btn btn-warning" type="button">Send code</button>
@@ -72,6 +72,12 @@
                     <button class="btn btn-warning" type="button">Verify Code</button>
                 </div>
             </div>
+            <div id="change-phone" class="input-group mb-3 {% if not request.user.customer.phone_number %} d-none {% endif %}">
+                <input type="text" class="form-control" disabled value="{{ request.user.customer.phone_number }}">
+                <div class="input-group-append">
+                    <button class="btn btn-warning" type="button">Change</button>
+                </div>
+            </div>   
         </div>
     </div>
 
@@ -135,6 +141,11 @@
             // User couldn't sign in (bad verification code?)
             // ...
             });
+        })
+
+        $("#change-phone button").on('click', function () {
+            $("#change-phone").addClass("d-none")
+            $("#get-code").removeClass("d-none")
         })
     </script>
 
