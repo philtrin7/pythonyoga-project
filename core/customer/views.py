@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages
+
+from django.contrib.auth import update_session_auth_hash
+from django.contribu.auth.forms import PasswordChangeForm
+
 from core.customer import forms
 
 @login_required()
@@ -12,7 +16,8 @@ def home(request):
 def profile_page(request):
 	user_form = forms.BasicUserForm(instance=request.user)
 	customer_form = forms.BasicCustomerForm(instance=request.user.customer)
-
+	password_form = PasswordChangeForm(request.user)
+	
 	if request.method == "POST":
 		user_form = forms.BasicUserForm(request.POST, instance=request.user)
 		customer_form = forms.BasicCustomerForm(request.POST, request.FILES, instance=request.user.customer)
@@ -26,5 +31,6 @@ def profile_page(request):
 
 	return render(request, 'customer/profile.html', {
 		"user_form": user_form,
-		"customer_form": customer_form
+		"customer_form": customer_form,
+		"password_form": password_form
 	})
