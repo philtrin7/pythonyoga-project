@@ -1,3 +1,7 @@
+import firebase_admin
+from firebase_admin import credentials, auth
+
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -7,6 +11,9 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 from core.customer import forms
+
+cred = credentials.Certificate(settings.FIREBASE_ADMIN_CREDENTIAL)
+firebase_admin.initialize_app(cred)
 
 @login_required()
 def home(request):
@@ -39,6 +46,13 @@ def profile_page(request):
 				
 				messages.success(request, 'Your password has been updated')
 				return redirect(reverse('customer:profile'))
+
+		elif request.POST.get('action') == 'update_phone':	
+			# Get Firebase user data
+			firebase_user = auth.verify_id_token(request.POST.get('id_token'))
+			request.user.customer.phone_number = firebase_user['phone_number']
+			request.user.customer.save()	
+			return redirect(reverse('customer:profile'))
 
 	return render(request, 'customer/profile.html', {
 		"user_form": user_form,
