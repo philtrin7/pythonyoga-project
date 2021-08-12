@@ -25,6 +25,7 @@
 {% endblock head %}
 
 {% block main %}
+    <!-- Basic Information -->
     <b class="text-secondary">Basic Information</b>
     <div class="card bg-white mt-2 mb-5">
         <div class="card-body">
@@ -38,6 +39,7 @@
         </div>
     </div>
 
+    <!-- Password -->
     <b class="text-secondary">Change Password</b>
     <div class="card bg-white mt-2 mb-5">
         <div class="card-body">
@@ -49,4 +51,40 @@
             </form>
         </div>
     </div>
+
+    <!-- Phone number -->
+    <b class="text-secondary">Phone Number</b><br />
+
+    <div class="card bg-white mt-2 mb-5">
+        <div class="card-body">
+            <div id="get-code" class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Your phone number">
+                <div class="input-group-append">
+                    <button class="btn btn-warning" type="button">Send code</button>
+                </div>
+            </div>   
+            <div id="verify-code" class="input-group mb-3 d-none">
+                <input type="text" class="form-control" placeholder="Verification code">
+                <div class="input-group-append">
+                    <button class="btn btn-warning" type="button">Verify Code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#get-code button").on('click', function() {
+            const phoneNumber = $("#get-code input").val()
+            console.log(phoneNumber)
+
+            $("#get-code").addClass("d-none")
+            $("#verify-code").removeClass("d-none")
+        })
+
+        $("#verify-code button").on('click', function() {
+            const code = $("#verify-code input").val()
+            console.log(code)
+        })
+    </script>
+
 {% endblock main %}
