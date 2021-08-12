@@ -57,6 +57,9 @@
 
     <div class="card bg-white mt-2 mb-5">
         <div class="card-body">
+
+            <div id="recaptcha-container"></div>
+
             <div id="get-code" class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Your phone number">
                 <div class="input-group-append">
@@ -73,17 +76,40 @@
     </div>
 
     <script>
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+
         $("#get-code button").on('click', function() {
             const phoneNumber = $("#get-code input").val()
             console.log(phoneNumber)
 
-            $("#get-code").addClass("d-none")
-            $("#verify-code").removeClass("d-none")
+            const appVerifier = window.recaptchaVerifier;
+            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+                console.log(confirmationResult)
+                window.confirmationResult = confirmationResult;
+                $("#get-code").addClass("d-none")
+                $("#verify-code").removeClass("d-none")
+
+            }).catch((error) => {
+                toast(error.message, 'error')
+            });
+
         })
 
         $("#verify-code button").on('click', function() {
             const code = $("#verify-code input").val()
-            console.log(code)
+
+            confirmationResult.confirm(code).then((result) => {
+                const user = result.user;
+                console.log(user.phoneNumber)
+
+                user.getIdToken().then(function (idToken){
+                    console.log(idToken)
+                })
+            }).catch((error) => {
+            // User couldn't sign in (bad verification code?)
+            // ...
+            });
         })
     </script>
 
