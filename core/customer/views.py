@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib import messages
 
 from django.contrib.auth import update_session_auth_hash
-from django.contribu.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 
 from core.customer import forms
 
@@ -19,15 +19,26 @@ def profile_page(request):
 	password_form = PasswordChangeForm(request.user)
 	
 	if request.method == "POST":
-		user_form = forms.BasicUserForm(request.POST, instance=request.user)
-		customer_form = forms.BasicCustomerForm(request.POST, request.FILES, instance=request.user.customer)
 
-		if user_form.is_valid() and customer_form.is_valid():
-			user_form.save()
-			customer_form.save()
+		if request.POST.get('action') == 'update_profile':
+			user_form = forms.BasicUserForm(request.POST, instance=request.user)
+			customer_form = forms.BasicCustomerForm(request.POST, request.FILES, instance=request.user.customer)
 
-			messages.success(request, 'Your profile has been updated')
-			return redirect(reverse('customer:profile'))
+			if user_form.is_valid() and customer_form.is_valid():
+				user_form.save()
+				customer_form.save()
+
+				messages.success(request, 'Your profile has been updated')
+				return redirect(reverse('customer:profile'))
+
+		elif request.POST.get('action') == 'update_password':	
+			password_form = PasswordChangeForm(request.user, request.POST)
+			if password_form.is_valid():
+				user = password_form.save()
+				update_session_auth_hash(request, user)
+				
+				messages.success(request, 'Your password has been updated')
+				return redirect(reverse('customer:profile'))
 
 	return render(request, 'customer/profile.html', {
 		"user_form": user_form,
