@@ -158,3 +158,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ['GMAIL_ACCOUNT']
 EMAIL_HOST_PASSWORD = os.environ['GMAIL_PASS'] 
 DEFAULT_FROM_EMAIL = 'Fast Parcel <no-reply@fastparcel.localhost>'
+
+FIREBASE_ADMIN_CREDENTIAL = os.path.join(BASE_DIR, "fastparcel-df78b-firebase-adminsdk-oi4ak-4f0c4257ec.json")
