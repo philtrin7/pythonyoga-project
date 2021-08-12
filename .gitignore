@@ -1,5 +1,6 @@
 # User added
 media
+fastparcel*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
