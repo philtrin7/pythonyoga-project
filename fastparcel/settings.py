@@ -160,3 +160,6 @@ EMAIL_HOST_PASSWORD = os.environ['GMAIL_PASS']
 DEFAULT_FROM_EMAIL = 'Fast Parcel <no-reply@fastparcel.localhost>'
 
 FIREBASE_ADMIN_CREDENTIAL = os.path.join(BASE_DIR, "fastparcel-df78b-firebase-adminsdk-oi4ak-4f0c4257ec.json")
+
+STRIPE_API_PUBLIC_KEY = "pk_test_51JOJ2VBw903sikgMxkGWLWtSmsMMx4S1VtuCdSQuBNPwYoz9uXP8B5qmeNuzIjfBtO6CfPwp6xaBAq74N5fFaXGI00HsQNv4jr"
+STRIPE_API_SECRET_KEY = "sk_test_51JOJ2VBw903sikgMIIpvxEZiFqaZmt82oApohvribgKJoBfL1CxWhaUQvtWeY2RhEqkMGGrcF0ciUJWdWhMkc0TO00t3PvwT1b" 
