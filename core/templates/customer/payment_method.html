@@ -1,12 +1,29 @@
 {% extends 'customer/base.html' %}
 {% load bootstrap4 %}
 
+{% block head %}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock head %}
+
 {% block main %}
     <b class="text-secondary">Your Credit/Debit Card</b>
 
     <div class="card bg-white mt-2 mb-5">
         <div class="card-body">
-            
+            <form id="setup-form" data-secret="{{ client_secret }}">
+                <div id="card-element"></div>
+                <button id="card-button">
+                    Save Card
+                </button>
+            </form> 
         </div>
     </div>
+
+    <script>
+        var stripe = Stripe("{{ STRIPE_API_PUBLIC_KEY }}");
+
+        var elements = stripe.elements();
+        var cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+    </script>
 {% endblock main %}
