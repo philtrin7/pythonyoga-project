@@ -1,3 +1,4 @@
+import stripe
 import firebase_admin
 from firebase_admin import credentials, auth
 
@@ -14,6 +15,8 @@ from core.customer import forms
 
 cred = credentials.Certificate(settings.FIREBASE_ADMIN_CREDENTIAL)
 firebase_admin.initialize_app(cred)
+
+stripe.api_key = settings.STRIPE_API_SECRET_KEY
 
 @login_required()
 def home(request):
