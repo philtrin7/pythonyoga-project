@@ -1,12 +1,51 @@
 {% extends 'customer/base.html' %}
 {% load bootstrap4 %}
 
+{% block head %}
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .StripeElement {
+            height: 40px;
+            padding: 10px 12px;
+            width: 100%;
+            color: #32325d;
+            background-color: white;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            
+        }
+        .StripeElement--focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255 .25);
+        }
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+{% endblock head %}
+
 {% block main %}
     <b class="text-secondary">Your Credit/Debit Card</b>
 
     <div class="card bg-white mt-2 mb-5">
         <div class="card-body">
-            
+            <form id="setup-form" data-secret="{{ client_secret }}">
+                <div id="card-element"></div>
+                <button id="card-button" class="btn btn-warning mt-3" type=button>
+                    Save Card
+                </button>
+            </form> 
         </div>
     </div>
+
+    <script>
+        var stripe = Stripe("{{ STRIPE_API_PUBLIC_KEY }}");
+
+        var elements = stripe.elements();
+        var cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+    </script>
 {% endblock main %}
