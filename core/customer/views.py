@@ -1,3 +1,4 @@
+import stripe
 import firebase_admin
 from firebase_admin import credentials, auth
 
@@ -14,6 +15,8 @@ from core.customer import forms
 
 cred = credentials.Certificate(settings.FIREBASE_ADMIN_CREDENTIAL)
 firebase_admin.initialize_app(cred)
+
+stripe.api_key = settings.STRIPE_API_SECRET_KEY
 
 @login_required()
 def home(request):
@@ -59,3 +62,51 @@ def profile_page(request):
 		"customer_form": customer_form,
 		"password_form": password_form
 	})
+
+@login_required(login_url="/sign-in/?next=/customer/")
+def payment_method_page(request):
+	current_customer = request.user.customer
+
+	# Remove existing card
+	if request.method == "POST":
+		stripe.PaymentMethod.detach(current_customer.stripe_payment_method_id)
+		current_customer.stripe_payment_method_id = ""
+		current_customer.stripe_card_last4 = ""
+		current_customer.save()
+		return redirect(reverse('customer:payment_method'))
+
+	# Save Stripe customer info
+	if not current_customer.stripe_customer_id:
+		customer = stripe.Customer.create()
+		current_customer.stripe_customer_id = customer['id']
+		current_customer.save()
+
+	# Get available payment methods for customer from Stripe
+	stripe_payment_methods = stripe.PaymentMethod.list(
+		customer = current_customer.stripe_customer_id,
+		type = "card"
+	)
+		
+	print(stripe_payment_methods)
+
+	if stripe_payment_methods and len(stripe_payment_methods.data) > 0:
+		payment_method = stripe_payment_methods.data[0]
+		current_customer.stripe_payment_method_id = payment_method.id
+		current_customer.stripe_card_last4 = payment_method.card.last4
+		current_customer.save()
+	else:
+		current_customer.stripe_payment_method_id = "" 
+		current_customer.stripe_card_last4 = "" 
+		current_customer.save()
+
+	if not current_customer.stripe_payment_method_id:
+		intent = stripe.SetupIntent.create(
+			customer = current_customer.stripe_customer_id
+		)
+
+		return render(request, 'customer/payment_method.html', {
+			"client_secret": intent.client_secret,
+			"STRIPE_API_PUBLIC_KEY": settings.STRIPE_API_PUBLIC_KEY
+		})
+	else:
+		return render(request, 'customer/payment_method.html')
