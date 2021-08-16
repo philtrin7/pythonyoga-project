@@ -34,7 +34,7 @@
         <div class="card-body">
             <form id="setup-form" data-secret="{{ client_secret }}">
                 <div id="card-element"></div>
-                <button id="card-button" class="btn btn-warning mt-3" type=button>
+                <button id="card-button" class="btn btn-warning mt-3" type="button">
                     Save Card
                 </button>
             </form> 
@@ -47,5 +47,29 @@
         var elements = stripe.elements();
         var cardElement = elements.create('card');
         cardElement.mount('#card-element');
+
+        var cardholderName = document.getElementById('cardholder-name');
+        var setupForm = document.getElementById('card-button');
+        var clientSecret = "{{ client_secret }}";
+
+        setupForm.addEventListener('click', function(ev) {
+            ev.preventDefault();
+            stripe.confirmCardSetup(
+                clientSecret,
+                {
+                payment_method: {
+                    card: cardElement,
+                },
+                }
+            ).then(function(result) {
+                if (result.error) {
+                // Display error.message in your UI.
+                    toast(result.error.message, 'error')
+                } else {
+                    toast("Payment method is added", 'success')
+                    window.location.reload()
+                }
+            });
+        });
     </script>
 {% endblock main %}
