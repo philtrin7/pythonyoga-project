@@ -110,3 +110,11 @@ def payment_method_page(request):
 		})
 	else:
 		return render(request, 'customer/payment_method.html')
+
+
+@login_required(login_url="/sign-in/?next=/customer/")
+def create_job_page(request):
+	if not request.user.customer.stripe_payment_method_id:
+		return redirect(reverse('customer:payment_method'))
+		
+	return render(request, 'customer/create_job.html')
