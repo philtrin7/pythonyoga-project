@@ -28,12 +28,20 @@
 {% endblock head %}
 
 {% block main %}
+    {% if not request.user.customer.stripe_payment_method_id %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Let's add your Credit Card or Debit Card to <strong>Create a Job</strong>!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    
     <b class="text-secondary">Your Credit/Debit Card</b>
 
     <div class="card bg-white mt-2 mb-5">
         <div class="card-body">
 
-            
             {% if request.user.customer.stripe_payment_method_id %}
                 <div id="change-card" class="input-group">
                     <input type="text" class="form-control" disabled value="**** **** **** {{ request.user.customer.stripe_card_last4 }}" />
