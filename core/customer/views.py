@@ -12,6 +12,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 from core.customer import forms
+from core.models import *
 
 cred = credentials.Certificate(settings.FIREBASE_ADMIN_CREDENTIAL)
 firebase_admin.initialize_app(cred)
@@ -124,11 +125,14 @@ def create_job_page(request):
     if not current_customer.stripe_payment_method_id:
         return redirect(reverse('customer:payment_method'))
 
-    step1_form = forms.JobCreateStep1Form()
+    creating_job = Job.objects.filter(
+        customer=current_customer, status=Job.CREATING_STATUS).last()
+    step1_form = forms.JobCreateStep1Form(instance=creating_job)
 
     if request.method == "POST":
         if request.POST.get('step') == '1':
-            step1_form = forms.JobCreateStep1Form(request.POST, request.FILES)
+            step1_form = forms.JobCreateStep1Form(
+                request.POST, request.FILES, instance=creating_job)
             if step1_form.is_valid():
                 creating_job = step1_form.save(commit=False)
                 creating_job.customer = current_customer
