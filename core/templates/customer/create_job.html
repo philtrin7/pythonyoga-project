@@ -27,7 +27,13 @@
           JOB SUMMARY
         </div>
         <div class="card-body">
+          {% if not job %}
           <p>A summary of your job information will appear here</p>
+          {% else %}
+          <h4>{{ job.name }}</h4>
+          <span>{{ job.quantity }} Item</span><br />
+          <span>{{ job.get_size_display }} Job</span>
+          {% endif %}
         </div>
       </div>
     </div>

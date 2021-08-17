@@ -140,5 +140,6 @@ def create_job_page(request):
                 return redirect(reverse('customer:create_job'))
 
     return render(request, 'customer/create_job.html', {
-        "step1_form": step1_form
+        "step1_form": step1_form,
+        "job": creating_job
     })
