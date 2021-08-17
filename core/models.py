@@ -64,5 +64,11 @@ class Job(models.Model):
         max_length=20, choices=STATUSES, default=CREATING_STATUS)
     create_at = models.DateTimeField(default=timezone.now)
 
+    pickup_address = models.CharField(max_length=255, blank=True)
+    pickup_lat = models.FloatField(default=0)
+    pickup_lng = models.FloatField(default=0)
+    pickup_name = models.CharField(max_length=255, blank=True)
+    pickup_phone = models.CharField(max_length=50, blank=True)
+
     def __str__(self):
         return self.name

@@ -71,7 +71,8 @@
       <!-- Step forms -->
       <b>CREATE A JOB</b>
       <div class="tab-content" id="pills-tabContent">
-        <div class="tab-pane fade {% if step == 1 %} show active {% endif %}" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
+        <div class="tab-pane fade {% if step == 1 %} show active {% endif %}" id="pills-info" role="tabpanel"
+          aria-labelledby="pills-info-tab">
           <h1>Item Info</h1>
           <form method="POST" enctype="multipart/form-data">
             <b class="text-secondary">Item Information</b><br />
@@ -85,13 +86,29 @@
             <button type="submit" class="btn btn-warning">Save & Continue</button>
           </form>
         </div>
-        <div class="tab-pane fade {% if step == 2 %} show active {% endif %}" id="pills-pickup" role="tabpanel" aria-labelledby="pills-pickup-tab">
+        <div class="tab-pane fade {% if step == 2 %} show active {% endif %}" id="pills-pickup" role="tabpanel"
+          aria-labelledby="pills-pickup-tab">
           <h1>Pickup</h1>
+          <form method="POST" enctype="multipart/form-data">
+            <b class="text-secondary">Pickup Information</b><br />
+            <div class="card bg-white mt-2 mb-5">
+              <div class="card-body">
+                {% csrf_token %}
+                {% bootstrap_form step2_form %}
+              </div>
+            </div>
+            <input type="hidden" name="step" value="2" />
+            <button type="button" class="btn btn-outline-warning"
+              onclick="$('#pills-info-tab').tab('show')">Back</button>
+            <button type="submit" class="btn btn-warning">Save & Continue</button>
+          </form>
         </div>
-        <div class="tab-pane fade {% if step == 3 %} show active {% endif %}" id="pills-delivery" role="tabpanel" aria-labelledby="pills-delivery-tab">
+        <div class="tab-pane fade {% if step == 3 %} show active {% endif %}" id="pills-delivery" role="tabpanel"
+          aria-labelledby="pills-delivery-tab">
           <h1>Delivery</h1>
         </div>
-        <div class="tab-pane fade {% if step == 4 %} show active {% endif %}" id="pills-payment" role="tabpanel" aria-labelledby="pills-payment-tab">
+        <div class="tab-pane fade {% if step == 4 %} show active {% endif %}" id="pills-payment" role="tabpanel"
+          aria-labelledby="pills-payment-tab">
           <h1>Payment</h1>
         </div>
       </div>

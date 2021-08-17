@@ -129,6 +129,8 @@ def create_job_page(request):
         customer=current_customer, status=Job.CREATING_STATUS).last()
     step1_form = forms.JobCreateStep1Form(instance=creating_job)
 
+    step2_form = forms.JobCreateStep2Form(instance=creating_job)
+
     if request.method == "POST":
         if request.POST.get('step') == '1':
             step1_form = forms.JobCreateStep1Form(
@@ -146,7 +148,8 @@ def create_job_page(request):
         current_step = 2
 
     return render(request, 'customer/create_job.html', {
-        "step1_form": step1_form,
         "job": creating_job,
-        "step": current_step
+        "step": current_step,
+        "step1_form": step1_form,
+        "step2_form": step2_form,
     })
