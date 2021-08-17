@@ -1,3 +1,4 @@
+import os
 import stripe
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -120,6 +121,7 @@ def payment_method_page(request):
 
 @login_required(login_url="/sign-in/?next=/customer/")
 def create_job_page(request):
+    GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
     current_customer = request.user.customer
 
     if not current_customer.stripe_payment_method_id:
@@ -141,6 +143,13 @@ def create_job_page(request):
                 creating_job.save()
                 return redirect(reverse('customer:create_job'))
 
+        elif request.POST.get('step') == '2':
+            step2_form = forms.JobCreateStep2Form(
+                request.POST, instance=creating_job)
+            if step2_form.is_valid():
+                creating_job = step2_form.save()
+                return redirect(reverse('customer:create_job'))
+
     # Determine the current step
     if not creating_job:
         current_step = 1
@@ -148,6 +157,7 @@ def create_job_page(request):
         current_step = 2
 
     return render(request, 'customer/create_job.html', {
+        "GOOGLE_API_KEY": GOOGLE_API_KEY,
         "job": creating_job,
         "step": current_step,
         "step1_form": step1_form,
