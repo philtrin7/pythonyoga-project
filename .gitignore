@@ -1,6 +1,7 @@
 # User added
 media
 fastparcel*.json
+secret_keys.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

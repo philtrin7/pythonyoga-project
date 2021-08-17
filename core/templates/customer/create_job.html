@@ -2,6 +2,11 @@
 {% load bootstrap4 %}
 
 {% block head %}
+<script
+  src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&callback=initMap&libraries=places&v=weekly"
+  defer>
+</script>
+
 <style>
   #pills-tab a {
     color: black;
