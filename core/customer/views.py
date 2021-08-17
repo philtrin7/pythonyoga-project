@@ -18,103 +18,108 @@ firebase_admin.initialize_app(cred)
 
 stripe.api_key = settings.STRIPE_API_SECRET_KEY
 
+
 @login_required()
 def home(request):
-	return redirect(reverse('customer:profile'))	
+    return redirect(reverse('customer:profile'))
+
 
 @login_required(login_url="/sign-in/?next=/customer/")
 def profile_page(request):
-	user_form = forms.BasicUserForm(instance=request.user)
-	customer_form = forms.BasicCustomerForm(instance=request.user.customer)
-	password_form = PasswordChangeForm(request.user)
-	
-	if request.method == "POST":
+    user_form = forms.BasicUserForm(instance=request.user)
+    customer_form = forms.BasicCustomerForm(instance=request.user.customer)
+    password_form = PasswordChangeForm(request.user)
 
-		if request.POST.get('action') == 'update_profile':
-			user_form = forms.BasicUserForm(request.POST, instance=request.user)
-			customer_form = forms.BasicCustomerForm(request.POST, request.FILES, instance=request.user.customer)
+    if request.method == "POST":
 
-			if user_form.is_valid() and customer_form.is_valid():
-				user_form.save()
-				customer_form.save()
+        if request.POST.get('action') == 'update_profile':
+            user_form = forms.BasicUserForm(
+                request.POST, instance=request.user)
+            customer_form = forms.BasicCustomerForm(
+                request.POST, request.FILES, instance=request.user.customer)
 
-				messages.success(request, 'Your profile has been updated')
-				return redirect(reverse('customer:profile'))
+            if user_form.is_valid() and customer_form.is_valid():
+                user_form.save()
+                customer_form.save()
 
-		elif request.POST.get('action') == 'update_password':	
-			password_form = PasswordChangeForm(request.user, request.POST)
-			if password_form.is_valid():
-				user = password_form.save()
-				update_session_auth_hash(request, user)
-				
-				messages.success(request, 'Your password has been updated')
-				return redirect(reverse('customer:profile'))
+                messages.success(request, 'Your profile has been updated')
+                return redirect(reverse('customer:profile'))
 
-		elif request.POST.get('action') == 'update_phone':	
-			# Get Firebase user data
-			firebase_user = auth.verify_id_token(request.POST.get('id_token'))
-			request.user.customer.phone_number = firebase_user['phone_number']
-			request.user.customer.save()	
-			return redirect(reverse('customer:profile'))
+        elif request.POST.get('action') == 'update_password':
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
 
-	return render(request, 'customer/profile.html', {
-		"user_form": user_form,
-		"customer_form": customer_form,
-		"password_form": password_form
-	})
+                messages.success(request, 'Your password has been updated')
+                return redirect(reverse('customer:profile'))
+
+        elif request.POST.get('action') == 'update_phone':
+            # Get Firebase user data
+            firebase_user = auth.verify_id_token(request.POST.get('id_token'))
+            request.user.customer.phone_number = firebase_user['phone_number']
+            request.user.customer.save()
+            return redirect(reverse('customer:profile'))
+
+    return render(request, 'customer/profile.html', {
+        "user_form": user_form,
+        "customer_form": customer_form,
+        "password_form": password_form
+    })
+
 
 @login_required(login_url="/sign-in/?next=/customer/")
 def payment_method_page(request):
-	current_customer = request.user.customer
+    current_customer = request.user.customer
 
-	# Remove existing card
-	if request.method == "POST":
-		stripe.PaymentMethod.detach(current_customer.stripe_payment_method_id)
-		current_customer.stripe_payment_method_id = ""
-		current_customer.stripe_card_last4 = ""
-		current_customer.save()
-		return redirect(reverse('customer:payment_method'))
+    # Remove existing card
+    if request.method == "POST":
+        stripe.PaymentMethod.detach(current_customer.stripe_payment_method_id)
+        current_customer.stripe_payment_method_id = ""
+        current_customer.stripe_card_last4 = ""
+        current_customer.save()
+        return redirect(reverse('customer:payment_method'))
 
-	# Save Stripe customer info
-	if not current_customer.stripe_customer_id:
-		customer = stripe.Customer.create()
-		current_customer.stripe_customer_id = customer['id']
-		current_customer.save()
+    # Save Stripe customer info
+    if not current_customer.stripe_customer_id:
+        customer = stripe.Customer.create()
+        current_customer.stripe_customer_id = customer['id']
+        current_customer.save()
 
-	# Get available payment methods for customer from Stripe
-	stripe_payment_methods = stripe.PaymentMethod.list(
-		customer = current_customer.stripe_customer_id,
-		type = "card"
-	)
-		
-	print(stripe_payment_methods)
+    # Get available payment methods for customer from Stripe
+    stripe_payment_methods = stripe.PaymentMethod.list(
+        customer=current_customer.stripe_customer_id,
+        type="card"
+    )
 
-	if stripe_payment_methods and len(stripe_payment_methods.data) > 0:
-		payment_method = stripe_payment_methods.data[0]
-		current_customer.stripe_payment_method_id = payment_method.id
-		current_customer.stripe_card_last4 = payment_method.card.last4
-		current_customer.save()
-	else:
-		current_customer.stripe_payment_method_id = "" 
-		current_customer.stripe_card_last4 = "" 
-		current_customer.save()
+    print(stripe_payment_methods)
 
-	if not current_customer.stripe_payment_method_id:
-		intent = stripe.SetupIntent.create(
-			customer = current_customer.stripe_customer_id
-		)
+    if stripe_payment_methods and len(stripe_payment_methods.data) > 0:
+        payment_method = stripe_payment_methods.data[0]
+        current_customer.stripe_payment_method_id = payment_method.id
+        current_customer.stripe_card_last4 = payment_method.card.last4
+        current_customer.save()
+    else:
+        current_customer.stripe_payment_method_id = ""
+        current_customer.stripe_card_last4 = ""
+        current_customer.save()
 
-		return render(request, 'customer/payment_method.html', {
-			"client_secret": intent.client_secret,
-			"STRIPE_API_PUBLIC_KEY": settings.STRIPE_API_PUBLIC_KEY
-		})
-	else:
-		return render(request, 'customer/payment_method.html')
+    if not current_customer.stripe_payment_method_id:
+        intent = stripe.SetupIntent.create(
+            customer=current_customer.stripe_customer_id
+        )
+
+        return render(request, 'customer/payment_method.html', {
+            "client_secret": intent.client_secret,
+            "STRIPE_API_PUBLIC_KEY": settings.STRIPE_API_PUBLIC_KEY
+        })
+    else:
+        return render(request, 'customer/payment_method.html')
 
 
 @login_required(login_url="/sign-in/?next=/customer/")
 def create_job_page(request):
-	if not request.user.customer.stripe_payment_method_id:
-		return redirect(reverse('customer:payment_method'))
-		
-	return render(request, 'customer/create_job.html')
+    if not request.user.customer.stripe_payment_method_id:
+        return redirect(reverse('customer:payment_method'))
+
+    return render(request, 'customer/create_job.html')
