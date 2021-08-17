@@ -133,6 +133,8 @@ def create_job_page(request):
 
     step2_form = forms.JobCreateStep2Form(instance=creating_job)
 
+    step3_form = forms.JobCreateStep3Form(instance=creating_job)
+
     if request.method == "POST":
         if request.POST.get('step') == '1':
             step1_form = forms.JobCreateStep1Form(
@@ -164,4 +166,5 @@ def create_job_page(request):
         "step": current_step,
         "step1_form": step1_form,
         "step2_form": step2_form,
+        "step3_form": step3_form,
     })
