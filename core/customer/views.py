@@ -119,10 +119,21 @@ def payment_method_page(request):
 
 @login_required(login_url="/sign-in/?next=/customer/")
 def create_job_page(request):
-    if not request.user.customer.stripe_payment_method_id:
+    current_customer = request.user.customer
+
+    if not current_customer.stripe_payment_method_id:
         return redirect(reverse('customer:payment_method'))
 
     step1_form = forms.JobCreateStep1Form()
+
+    if request.method == "POST":
+        if request.POST.get('step') == '1':
+            step1_form = forms.JobCreateStep1Form(request.POST, request.FILES)
+            if step1_form.is_valid():
+                creating_job = step1_form.save(commit=False)
+                creating_job.customer = current_customer
+                creating_job.save()
+                return redirect(reverse('customer:create_job'))
 
     return render(request, 'customer/create_job.html', {
         "step1_form": step1_form
