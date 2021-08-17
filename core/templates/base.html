@@ -68,11 +68,17 @@
       for message in messages %
     }
     toast('{{ message }}', '{{ message.tags }}') {
-      % endfor %
+      %
+      endfor %
     } {
-      % endif %
+      %
+      endif %
     }
   </script>
+
+  {% block footercontent %}
+  {% endblock %}
+
 </body>
 
 </html>
