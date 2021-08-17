@@ -139,7 +139,14 @@ def create_job_page(request):
                 creating_job.save()
                 return redirect(reverse('customer:create_job'))
 
+    # Determine the current step
+    if not creating_job:
+        current_step = 1
+    else:
+        current_step = 2
+
     return render(request, 'customer/create_job.html', {
         "step1_form": step1_form,
-        "job": creating_job
+        "job": creating_job,
+        "step": current_step
     })
