@@ -39,9 +39,20 @@
           {% if not job %}
           <p>A summary of your job information will appear here</p>
           {% else %}
+
+          {% if step > 1 %}
           <h4>{{ job.name }}</h4>
           <span>{{ job.quantity }} Item</span><br />
           <span>{{ job.get_size_display }} Job</span>
+          {% endif %}
+
+          {% if step > 2 %}
+          <hr />
+          <p class="text-secondary"><small><b>PICKUP</b></small></p>
+          <h4>{{ job.pickup_name }}</h4>
+          <span>{{ job.pickup_address }}</span><br />
+          {% endif %}
+
           {% endif %}
         </div>
       </div>
