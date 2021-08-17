@@ -153,6 +153,8 @@ def create_job_page(request):
     # Determine the current step
     if not creating_job:
         current_step = 1
+    elif creating_job.pickup_name:
+        current_step = 3
     else:
         current_step = 2
 
