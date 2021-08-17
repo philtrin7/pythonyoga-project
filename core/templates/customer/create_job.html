@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
+
 {% block head %}
 <style>
   #pills-tab a {
@@ -65,6 +67,17 @@
       <div class="tab-content" id="pills-tabContent">
         <div class="tab-pane fade show active" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
           <h1>Item Info</h1>
+          <form method="POST" enctype="multipart/form-data">
+            <b class="text-secondary">Item Information</b><br />
+            <div class="card bg-white mt-2 mb-5">
+              <div class="card-body">
+                {% csrf_token %}
+                {% bootstrap_form step1_form %}
+              </div>
+            </div>
+            <input type="hidden" name="step" value="1" />
+            <button type="submit" class="btn btn-warning">Save & Continue</button>
+          </form>
         </div>
         <div class="tab-pane fade" id="pills-pickup" role="tabpanel" aria-labelledby="pills-pickup-tab">
           <h1>Pickup</h1>
