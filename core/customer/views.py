@@ -1,4 +1,4 @@
-import os
+import requests
 import stripe
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -121,7 +121,6 @@ def payment_method_page(request):
 
 @login_required(login_url="/sign-in/?next=/customer/")
 def create_job_page(request):
-    GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
     current_customer = request.user.customer
 
     if not current_customer.stripe_payment_method_id:
@@ -155,8 +154,32 @@ def create_job_page(request):
         elif request.POST.get('step') == '3':
             step3_form = forms.JobCreateStep3Form(
                 request.POST, instance=creating_job)
+
             if step3_form.is_valid():
                 creating_job = step3_form.save()
+
+                try:
+                    r = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins={}&destinations={}&mode=transit&key={}".format(
+                        creating_job.pickup_address,
+                        creating_job.delivery_address,
+                        settings.GOOGLE_API_KEY
+                    ))
+                    print(r.json()['rows'])
+
+                    distance = r.json()[
+                        'rows'][0]['elements'][0]['distance']['value']
+                    duration = r.json()[
+                        'rows'][0]['elements'][0]['duration']['value']
+                    creating_job.distance = round(distance / 1000, 2)
+                    creating_job.duration = int(duration / 60)
+                    creating_job.price = creating_job.distance * 1  # $1 per Km
+                    creating_job.save()
+
+                except Exception as e:
+                    print(e)
+                    messages.error(
+                        request, "Unfortunately, we do not support deliveries at this distance.")
+
                 return redirect(reverse('customer:create_job'))
 
     # Determine the current step
@@ -170,7 +193,7 @@ def create_job_page(request):
         current_step = 2
 
     return render(request, 'customer/create_job.html', {
-        "GOOGLE_API_KEY": GOOGLE_API_KEY,
+        "GOOGLE_API_KEY": settings.GOOGLE_API_KEY,
         "job": creating_job,
         "step": current_step,
         "step1_form": step1_form,
