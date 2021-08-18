@@ -50,6 +50,13 @@
           <span>{{ job.pickup_address }}</span><br />
           {% endif %}
 
+          {% if step > 3 %}
+          <hr />
+          <p class="text-secondary"><small><b>DELIVERY</b></small></p>
+          <h4>{{ job.delivery_name }}</h4>
+          <span>{{ job.delivery_address }}</span><br />
+          {% endif %}
+
           {% endif %}
         </div>
       </div>
