@@ -281,6 +281,11 @@ def archived_jobs_page(request):
 def job_page(request, job_id):
     job = Job.objects.get(id=job_id)
 
+    if request.method == "POST" and job.status == Job.PROCESSING_STATUS:
+        job.status = Job.CANCELLED_STATUS
+        job.save()
+        return redirect(reverse('customer:archived_jobs'))
+
     return render(request, 'customer/job.html', {
         "GOOGLE_API_KEY": settings.GOOGLE_API_KEY,
         "job": job
