@@ -126,6 +126,19 @@ def create_job_page(request):
     if not current_customer.stripe_payment_method_id:
         return redirect(reverse('customer:payment_method'))
 
+    has_current_job = Job.objects.filter(
+        customer=current_customer,
+        status__in=[
+            Job.PROCESSING_STATUS,
+            Job.PICKING_STATUS,
+            Job.DELIVERING_STATUS
+        ]
+    ).exists()
+
+    if has_current_job:
+        messages.warning(request, "You are currently already processing a job")
+        return redirect(reverse('customer:current_jobs'))
+
     creating_job = Job.objects.filter(
         customer=current_customer, status=Job.CREATING_STATUS).last()
     step1_form = forms.JobCreateStep1Form(instance=creating_job)
@@ -230,4 +243,35 @@ def create_job_page(request):
         "step1_form": step1_form,
         "step2_form": step2_form,
         "step3_form": step3_form,
+    })
+
+
+@login_required(login_url="/sign-in/?next=/customer/")
+def current_jobs_page(request):
+    jobs = Job.objects.filter(
+        customer=request.user.customer,
+        status__in=[
+            Job.PROCESSING_STATUS,
+            Job.PICKING_STATUS,
+            Job.DELIVERING_STATUS
+        ]
+    )
+
+    return render(request, 'customer/jobs.html', {
+        "jobs": jobs
+    })
+
+
+@login_required(login_url="/sign-in/?next=/customer/")
+def archived_jobs_page(request):
+    jobs = Job.objects.filter(
+        customer=request.user.customer,
+        status__in=[
+            Job.COMPLETED_STATUS,
+            Job.CANCELLED_STATUS,
+        ]
+    )
+
+    return render(request, 'customer/jobs.html', {
+        "jobs": jobs
     })
