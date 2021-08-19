@@ -275,3 +275,12 @@ def archived_jobs_page(request):
     return render(request, 'customer/jobs.html', {
         "jobs": jobs
     })
+
+
+@login_required(login_url="/sign-in/?next=/customer/")
+def job_page(request, job_id):
+    job = Job.objects.get(id=job_id)
+
+    return render(request, 'customer/job.html', {
+        "job": job
+    })

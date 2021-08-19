@@ -16,7 +16,8 @@ customer_urlpatterns = [
          name='payment_method'),
     path('create_job/', customer_views.create_job_page, name='create_job'),
     path('jobs/current/', customer_views.current_jobs_page, name='current_jobs'),
-    path('jobs/archived/', customer_views.archived_jobs_page, name='archived_jobs')
+    path('jobs/archived/', customer_views.archived_jobs_page, name='archived_jobs'),
+    path('jobs/<job_id>/', customer_views.job_page, name='job')
 ]
 
 courier_urlpatterns = [
