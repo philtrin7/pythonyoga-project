@@ -231,3 +231,34 @@ def create_job_page(request):
         "step2_form": step2_form,
         "step3_form": step3_form,
     })
+
+
+@login_required(login_url="/sign-in/?next=/customer/")
+def current_jobs_page(request):
+    jobs = Job.objects.filter(
+        customer=request.user.customer,
+        status__in=[
+            Job.PROCESSING_STATUS,
+            Job.PICKING_STATUS,
+            Job.DELIVERING_STATUS
+        ]
+    )
+
+    return render(request, 'customer/jobs.html', {
+        "jobs": jobs
+    })
+
+
+@login_required(login_url="/sign-in/?next=/customer/")
+def archived_jobs_page(request):
+    jobs = Job.objects.filter(
+        customer=request.user.customer,
+        status__in=[
+            Job.COMPLETED_STATUS,
+            Job.CANCELLED_STATUS,
+        ]
+    )
+
+    return render(request, 'customer/jobs.html', {
+        "jobs": jobs
+    })
