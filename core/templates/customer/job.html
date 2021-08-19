@@ -18,6 +18,41 @@
         padding: 10px;
     }
 </style>
+<script>
+    var pickupLat = parseFloat("{{ job.pickup_lat }}")
+    var pickupLng = parseFloat("{{ job.pickup_lng }}")
+    var deliveryLat = parseFloat("{{ job.delivery_lat }}")
+    var deliveryLng = parseFloat("{{ job.delivery_lng }}")
+
+    function initMap() {
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 7,
+            center: {
+                lat: 41.85,
+                lng: -87.65
+            },
+        });
+        directionsRenderer.setMap(map);
+
+        calculateAndDisplayRoute(directionsService, directionsRenderer);
+
+    }
+
+    function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+        directionsService
+            .route({
+                origin: new google.maps.LatLng(pickupLat, pickupLng),
+                destination: new google.maps.LatLng(deliveryLat, deliveryLng),
+                travelMode: google.maps.TravelMode.DRIVING,
+            })
+            .then((response) => {
+                directionsRenderer.setDirections(response);
+            })
+            .catch((e) => window.alert("Directions request failed due to " + status));
+    }
+</script>
 {% endblock head %}
 
 {% block main %}
@@ -49,6 +84,7 @@
     </div>
 </div>
 
+<!-- DELIVERY INFO -->
 <b class="text-secondary">DELIVERY INFORMATION</b>
 <div class="card bg-white mt-2 mb-5">
     <div class="card-body p-4">
@@ -97,4 +133,24 @@
         </div>
     </div>
 </div>
+
+<!-- MAP -->
+<div class="d-flex justify-content-between">
+    <b class="text-secondary">TRACK DELIVERY</b>
+    <div>
+        <span class="badge badge-warning">{{ job.get_status_display }}</span>
+    </div>
+</div>
+
+<div class="card bg-white mt-2">
+    <div class="card-body p-0">
+        <div id="map" style="height: 500px;"></div>
+    </div>
+</div>
 {% endblock main %}
+
+{% block scripts %}
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&callback=initMap&libraries=places&v=weekly">
+</script>
+{% endblock %}
