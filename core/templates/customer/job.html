@@ -1,4 +1,5 @@
 {% extends 'customer/base.html' %}
+{% load static %}
 
 {% block head %}
 <style>
@@ -18,6 +19,60 @@
         padding: 10px;
     }
 </style>
+<script>
+    var pickupLat = parseFloat("{{ job.pickup_lat }}")
+    var pickupLng = parseFloat("{{ job.pickup_lng }}")
+    var deliveryLat = parseFloat("{{ job.delivery_lat }}")
+    var deliveryLng = parseFloat("{{ job.delivery_lng }}")
+
+    function initMap() {
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({
+            suppressMarkers: true,
+            polylineOptions: {
+                strokeColor: "#000",
+                strokeWeight: 5,
+                strokeOpacity: 0.8
+            }
+        });
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 7,
+            center: {
+                lat: 41.85,
+                lng: -87.65
+            },
+        });
+        directionsRenderer.setMap(map);
+        calculateAndDisplayRoute(map, directionsService, directionsRenderer);
+    }
+
+    function calculateAndDisplayRoute(map, directionsService, directionsRenderer) {
+        directionsService
+            .route({
+                origin: new google.maps.LatLng(pickupLat, pickupLng),
+                destination: new google.maps.LatLng(deliveryLat, deliveryLng),
+                travelMode: google.maps.TravelMode.DRIVING,
+            })
+            .then((response) => {
+                if (response.status === "OK") {
+                    var leg = response.routes[0].legs[0]
+                    new google.maps.Marker({
+                        position: leg.start_location,
+                        map: map,
+                        icon: "{% static 'img/start.png' %}"
+                    })
+
+                    new google.maps.Marker({
+                        position: leg.end_location,
+                        map: map,
+                        icon: "{% static 'img/end.png' %}"
+                    })
+                }
+                directionsRenderer.setDirections(response)
+            })
+            .catch((e) => window.alert("Directions request failed due to " + status));
+    }
+</script>
 {% endblock head %}
 
 {% block main %}
@@ -49,6 +104,7 @@
     </div>
 </div>
 
+<!-- DELIVERY INFO -->
 <b class="text-secondary">DELIVERY INFORMATION</b>
 <div class="card bg-white mt-2 mb-5">
     <div class="card-body p-4">
@@ -97,4 +153,24 @@
         </div>
     </div>
 </div>
+
+<!-- MAP -->
+<div class="d-flex justify-content-between">
+    <b class="text-secondary">TRACK DELIVERY</b>
+    <div>
+        <span class="badge badge-warning">{{ job.get_status_display }}</span>
+    </div>
+</div>
+
+<div class="card bg-white mt-2">
+    <div class="card-body p-0">
+        <div id="map" style="height: 500px;"></div>
+    </div>
+</div>
 {% endblock main %}
+
+{% block scripts %}
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&callback=initMap&libraries=places&v=weekly">
+</script>
+{% endblock %}
