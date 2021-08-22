@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courier | FastParcel</title>
+
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" />
+
+    {% block head %}{% endblock head %}
+</head>
+
+<body>
+    <!-- body content -->
+    {% block content %}{% endblock content %}
+
+    <!-- footer -->
+    {% block footercontent %}{% endblock footercontent %}
+
+    <!-- scripts -->
+    {% block scripts %}{% endblock scripts %}
+</body>
+
+</html>
