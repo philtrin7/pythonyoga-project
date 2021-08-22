@@ -18,6 +18,15 @@ class Customer(models.Model):
         return self.user.get_full_name()
 
 
+class Courier(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    lat = models.FloatField(default=0)
+    lng = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.user.get_full_name()
+
+
 class Category(models.Model):
     slug = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
@@ -54,6 +63,8 @@ class Job(models.Model):
     # Step 1
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    courier = models.ForeignKey(
+        Courier, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     category = models.ForeignKey(
