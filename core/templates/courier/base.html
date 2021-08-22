@@ -11,14 +11,26 @@
     {% bootstrap_css %}
     {% bootstrap_javascript jquery='full' %}
 
+    <script>
+        let vh = window.innerHeight * 0.01;
+
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    </script>
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" />
 
+    <style>
+        #content {
+            height: calc(var(--vh, 1vh) * 100);
+        }
+    </style>
     {% block head %}{% endblock head %}
 </head>
 
 <body>
-    <!-- body content -->
-    {% block content %}{% endblock content %}
+    <div id="content">
+        {% block content %}{% endblock content %}
+    </div>
 
     <!-- footer -->
     {% block footercontent %}{% endblock footercontent %}
