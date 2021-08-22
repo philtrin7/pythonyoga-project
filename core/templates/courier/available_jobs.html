@@ -6,14 +6,38 @@
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 13,
             center: {
-                lat: 41.85,
-                lng: -87.65
+                lat: -33.867139,
+                lng: 151.207114
             },
         });
+
+        fetch("{% url 'courier:available_jobs_api' %}")
+            .then(res => res.json())
+            .then(json => {
+                for (let i = 0; i < json.jobs.length; i++) {
+                    const job = json.jobs[i]
+                    const position = {
+                        lat: job.pickup_lat,
+                        lng: job.pickup_lng
+                    }
+                    const marker = new google.maps.Marker({
+                        position: position,
+                        map
+                    })
+                    new google.maps.InfoWindow({
+                        content: "<small><b>" + job.name + "</b></small><br /><small>" + job.distance +
+                            " Km</small>"
+                    }).open(map, marker)
+                }
+            })
     }
 </script>
 
 <style>
+    .gm-ui-hover-effect {
+        display: none !important;
+    }
+
     #map {
         flex: 1;
     }
