@@ -14,6 +14,9 @@
         fetch("{% url 'courier:available_jobs_api' %}")
             .then(res => res.json())
             .then(json => {
+                // new viewpoint bound
+                var bounds = new google.maps.LatLngBounds()
+
                 for (let i = 0; i < json.jobs.length; i++) {
                     const job = json.jobs[i]
                     const position = {
@@ -24,6 +27,9 @@
                         position: position,
                         map
                     })
+
+                    bounds.extend(position)
+
                     new google.maps.InfoWindow({
                         content: "<small><b>" + job.name + "</b></small><br /><small>" + job.distance +
                             " Km</small>"
@@ -33,6 +39,8 @@
                     marker.addListener("click", () => {
                         showJobDetails(job)
                     })
+
+                    map.fitBounds(bounds)
                 }
             })
     }
