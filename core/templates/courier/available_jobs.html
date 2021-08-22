@@ -54,6 +54,9 @@
         $("#distance").html(job.distance)
         $("#price").html(job.price)
         $("#job-photo").attr('src', "/media/" + job.photo)
+        $("#job-details").on("click", function () {
+            window.location.href = "/courier/jobs/available/" + job.id + "/"
+        })
     }
 </script>
 
