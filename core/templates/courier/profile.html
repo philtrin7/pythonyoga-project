@@ -1,0 +1,11 @@
+{% extends 'courier/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="media align-items-center bg-warning p-3">
+    <img src="{% static 'img/avatar.png' %}" class="rounded-circle" width="60" height="60" />
+    <div class="media-body ml-4">
+        <h4 class="mb-0">{{ request.user.get_full_name }}</h4>
+    </div>
+</div>
+{% endblock content %}

@@ -36,6 +36,7 @@
 {% url 'courier:available_jobs' as available_jobs_url %}
 {% url 'courier:current_job' as current_job_url %}
 {% url 'courier:archived_jobs' as archived_jobs_url %}
+{% url 'courier:profile' as <profile_ur></profile_ur>l %}
 
 <div class="bottom-tabs d-flex">
     <a href="{% url 'courier:available_jobs' %}" class="{% if request.path == available_jobs_url %} active {% endif %}">
@@ -47,7 +48,7 @@
         <i class=" fas fa-archive"></i>
         <span>My Jobs</span>
     </a>
-    <a href="#">
+    <a href="{% url 'courier:profile' %}" class="{% if request.path == profile_url %} active {% endif %}">
         <i class="fas fa-user"></i>
         <span>Profile</span>
     </a>
