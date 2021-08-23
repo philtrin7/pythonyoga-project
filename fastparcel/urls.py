@@ -30,6 +30,10 @@ courier_urlpatterns = [
          name="current_job_take_photo_page"),
     path('jobs/complete/', courier_views.job_complete_page,
          name="job_complete"),
+    path('jobs/archived/', courier_views.archived_jobs_page,
+         name="archived_jobs"),
+    path('jobs/profile/', courier_views.profile_page,
+         name="profile"),
 
     path('api/jobs/available/', courier_apis.available_jobs_api,
          name="available_jobs_api"),

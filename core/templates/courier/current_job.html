@@ -103,8 +103,8 @@
 <div class="d-flex flex-column h-100" style="padding-bottom: 60px">
     <div class="text-center">
         <div class="btn-group mt-1 mb-1 align-item-center" role="group">
-            <a href="#" class="btn btn-warning">Current Job</a>
-            <a href="#" class="btn btn-outline-warning">Archive Jobs</a>
+            <a href="{% url 'courier:current_job' %}" class="btn btn-warning">Current Job</a>
+            <a href="{% url 'courier:archived_jobs' %}" class="btn btn-outline-warning">Archive Jobs</a>
         </div>
     </div>
 
