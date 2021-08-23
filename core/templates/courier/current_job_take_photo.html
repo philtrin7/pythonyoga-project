@@ -46,7 +46,8 @@
     <img id="photo" />
     <div class="buttons">
         <a href="javascript:void(retake_photo())" id="retake-button" class="btn btn-light">Retake</a>
-        <a href="javascript:void(upload_photo())" id="upload-button" class="btn btn-warning">Upload Pickup Photo</a>
+        <a href="javascript:void(upload_photo())" id="upload-button" class="btn btn-warning">
+            Upload {% if job.status == 'picking' %} Pickup {% else %} Drop-off {% endif %} Photo</a>
     </div>
 </div>
 
@@ -59,7 +60,8 @@
     </a>
 
     <div class="buttons">
-        <a href="javascript:void(take_photo())" class="btn btn-warning">Take Pickup Photo</a>
+        <a href="javascript:void(take_photo())" class="btn btn-warning">
+            Take {% if job.status == 'picking' %} Pickup {% else %} Drop-off {% endif %} Photo</a>
     </div>
 </div>
 
@@ -89,7 +91,8 @@
     function upload_photo() {
         document.getElementById("canvas").toBlob(function (blob) {
             var formData = new FormData()
-            formData.append('pickup_photo', blob, 'pickup_photo.png')
+            var upload_name = "{% if job.status == 'picking' %}pickup{% else %}delivery{% endif %}_photo"
+            formData.append(upload_name, blob, upload_name + '.png')
 
             fetch("{% url 'courier:current_job_update_api' job.id %}", {
                 method: "POST",
@@ -98,7 +101,8 @@
                 return res.json()
             }).then(function (json) {
                 if (json.success) {
-                    window.location.href = "{% url 'courier:current_job' %}"
+                    window.location.href =
+                        "{% if job.status == 'picking' %}{% url 'courier:current_job' %}{% else %}{% url 'courier:home' %}{% endif %}"
                 }
             })
         })

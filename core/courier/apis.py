@@ -35,6 +35,12 @@ def current_job_update_api(request, id):
         job.status = Job.DELIVERING_STATUS
         job.save()
 
+    elif job.status == Job.DELIVERING_STATUS:
+        job.delivery_photo = request.FILES['delivery_photo']
+        job.delivered_at = timezone.now()
+        job.status = Job.COMPLETED_STATUS
+        job.save()
+
     return JsonResponse({
         "success": True
     })
