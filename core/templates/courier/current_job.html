@@ -52,8 +52,29 @@
                     })
                 }
                 directionsRenderer.setDirections(response)
+                updateCourierPosition(map)
             })
             .catch((e) => window.alert("Directions request failed due to " + status));
+    }
+
+    function updateCourierPosition(map) {
+        navigator.geolocation.watchPosition(
+            pos => {
+                var courierPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
+
+                if (!window.courierMarker) {
+                    window.courierMarker = new google.maps.Marker({
+                        position: courierPosition,
+                        map,
+                        icon: "{% static 'img/courier.png' %}"
+                    })
+                } else {
+                    window.courierMarker.setPosition(courierPosition)
+                }
+
+                map.panTo(courierPosition)
+            },
+            pos => console.log(pos))
     }
 </script>
 
