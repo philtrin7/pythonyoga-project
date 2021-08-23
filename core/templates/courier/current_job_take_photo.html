@@ -1,6 +1,8 @@
 {% extends 'courier/base.html' %}
+{% load static %}
 
 {% block head %}
+<script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
 <style>
     body {
         background-color: black;
@@ -30,10 +32,24 @@
         width: 100%;
         height: auto;
     }
+
+    #upload-step {
+        height: 100%;
+        display: none;
+        align-items: center;
+    }
 </style>
 {% endblock head %}
 
 {% block content %}
+<div id="upload-step">
+    <img id="photo" />
+    <div class="buttons">
+        <a href="javascript:void(retake_photo())" id="retake-button" class="btn btn-light">Retake</a>
+        <a href="javascript:void(upload_photo())" id="upload-button" class="btn btn-warning">Upload Pickup Photo</a>
+    </div>
+</div>
+
 <div id="take-photo-step">
     <video id="webcam" autoplay playsinline></video>
     <canvas id="canvas" class="d-none"></canvas>
@@ -43,7 +59,31 @@
     </a>
 
     <div class="buttons">
-        <a href="#" class="btn btn-warning">Take Pickup Photo</a>
+        <a href="javascript:void(take_photo())" class="btn btn-warning">Take Pickup Photo</a>
     </div>
 </div>
+
 {% endblock content %}
+
+{% block scripts %}
+<script>
+    const webcamElement = document.getElementById('webcam')
+    const canvasElement = document.getElementById('canvas')
+    const webcam = new Webcam(webcamElement, 'environment', canvasElement)
+    webcam.start()
+
+    function take_photo() {
+        let picture = webcam.snap()
+        console.log(picture)
+
+        $("#photo").attr("src", picture)
+        $("#take-photo-step").css("display", "none")
+        $("#upload-step").css("display", "flex")
+    }
+
+    function retake_photo() {
+        $("#upload-step").css("display", "none")
+        $("#take-photo-step").css("display", "flex")
+    }
+</script>
+{% endblock scripts %}
