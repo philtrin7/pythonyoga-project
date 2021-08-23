@@ -102,7 +102,7 @@
             }).then(function (json) {
                 if (json.success) {
                     window.location.href =
-                        "{% if job.status == 'picking' %}{% url 'courier:current_job' %}{% else %}{% url 'courier:home' %}{% endif %}"
+                        "{% if job.status == 'picking' %}{% url 'courier:current_job' %}{% else %}{% url 'courier:job_complete' %}{% endif %}"
                 }
             })
         })

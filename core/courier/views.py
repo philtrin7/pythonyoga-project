@@ -70,3 +70,8 @@ def current_job_take_photo_page(request, id):
     return render(request, 'courier/current_job_take_photo.html', {
         "job": job
     })
+
+
+@login_required(login_url="/sign-in/?next=/courier/")
+def job_complete_page(request):
+    return render(request, 'courier/job_complete.html')
