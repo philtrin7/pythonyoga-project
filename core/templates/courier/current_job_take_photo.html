@@ -85,5 +85,23 @@
         $("#upload-step").css("display", "none")
         $("#take-photo-step").css("display", "flex")
     }
+
+    function upload_photo() {
+        document.getElementById("canvas").toBlob(function (blob) {
+            var formData = new FormData()
+            formData.append('pickup_photo', blob, 'pickup_photo.png')
+
+            fetch("{% url 'courier:current_job_update_api' job.id %}", {
+                method: "POST",
+                body: formData
+            }).then(function (res) {
+                return res.json()
+            }).then(function (json) {
+                if (json.success) {
+                    window.location.href = "{% url 'courier:current_job' %}"
+                }
+            })
+        })
+    }
 </script>
 {% endblock scripts %}
