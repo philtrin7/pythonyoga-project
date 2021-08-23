@@ -54,7 +54,7 @@ def current_job_page(request):
 
 
 @login_required(login_url="/sign-in/?next=/courier/")
-def current_job_take_photo_page(request):
+def current_job_take_photo_page(request, id):
     job = Job.objects.filter(
         id=id,
         courier=request.user.courier,

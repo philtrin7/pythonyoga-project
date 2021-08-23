@@ -6,7 +6,7 @@
         background-color: black;
     }
 
-    .btn-black {
+    .btn-back {
         position: fixed;
         top: 30px;
         left: 30px;
@@ -35,8 +35,12 @@
 
 {% block content %}
 <div id="take-photo-step">
-    <video id="webcom" autoplay playsinline></video>
+    <video id="webcam" autoplay playsinline></video>
     <canvas id="canvas" class="d-none"></canvas>
+
+    <a href="{% url 'courier:current_job' %}" class="btn-back">
+        <i class="fas fa-chevron-left text-light"></i>
+    </a>
 
     <div class="buttons">
         <a href="#" class="btn btn-warning">Take Pickup Photo</a>
