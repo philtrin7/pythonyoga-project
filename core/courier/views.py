@@ -35,3 +35,43 @@ def available_job_page(request, id):
     return render(request, 'courier/available_job.html', {
         "job": job
     })
+
+
+@login_required(login_url="/sign-in/?next=/courier/")
+def current_job_page(request):
+    job = Job.objects.filter(
+        courier=request.user.courier,
+        status__in=[
+            Job.PICKING_STATUS,
+            Job.DELIVERING_STATUS
+        ]
+    ).last()
+
+    return render(request, 'courier/current_job.html', {
+        "job": job,
+        "GOOGLE_API_KEY": settings.GOOGLE_API_KEY
+    })
+
+
+@login_required(login_url="/sign-in/?next=/courier/")
+def current_job_take_photo_page(request, id):
+    job = Job.objects.filter(
+        id=id,
+        courier=request.user.courier,
+        status__in=[
+            Job.PICKING_STATUS,
+            Job.DELIVERING_STATUS
+        ]
+    ).last()
+
+    if not job:
+        return redirect(reverse('courier:current_job'))
+
+    return render(request, 'courier/current_job_take_photo.html', {
+        "job": job
+    })
+
+
+@login_required(login_url="/sign-in/?next=/courier/")
+def job_complete_page(request):
+    return render(request, 'courier/job_complete.html')
