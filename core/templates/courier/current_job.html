@@ -9,6 +9,11 @@
     var deliveryLng = parseFloat("{{ job.delivery_lng }}")
 
     function initMap() {
+
+        if (!document.getElementById("map")) {
+            return
+        }
+
         const directionsService = new google.maps.DirectionsService();
         const directionsRenderer = new google.maps.DirectionsRenderer({
             suppressMarkers: true,
@@ -96,6 +101,15 @@
 
 {% block content %}
 <div class="d-flex flex-column h-100" style="padding-bottom: 60px">
+    <div class="text-center">
+        <div class="btn-group mt-1 mb-1 align-item-center" role="group">
+            <a href="#" class="btn btn-warning">Current Job</a>
+            <a href="#" class="btn btn-outline-warning">Archive Jobs</a>
+        </div>
+    </div>
+
+
+    {% if job %}
     <div id="map"></div>
 
     <div class="card">
@@ -127,6 +141,15 @@
             </div>
         </div>
     </div>
+
+    {% else %}
+    <div id="main" class="text-center">
+        <p>You have no job now. Let's pick a new one.</p>
+    </div>
+
+    {% endif %}
+
+
 </div>
 {% include 'courier/bottom_tabs.html' %}
 {% endblock content %}
