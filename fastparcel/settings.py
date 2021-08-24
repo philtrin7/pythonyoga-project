@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',
     'bootstrap4',
-    'core.apps.CoreConfig'
-
+    'core.apps.CoreConfig',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -173,3 +173,5 @@ PAYPAL_CLIENT_ID = os.environ['PAYPAL_CLIENT_ID']
 PAYPAL_CLIENT_SECRET = os.environ['PAYPAL_CLIENT_SECRET']
 
 NGROK_URL = os.environ['NGROK_URL']
+
+ASGI_APPLICATION = "fastparcel.asgi.application"

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
-from core import views
+from core import consumers, views
 
 from core.customer import views as customer_views
 from core.courier import views as courier_views, apis as courier_apis
@@ -57,6 +57,10 @@ urlpatterns = [
     path('courier/', include((courier_urlpatterns, 'courier'))),
     path('firebase-messaging-sw.js', (TemplateView.as_view(
         template_name="firebase-messaging-sw.js", content_type="application/javascript",))),
+]
+
+websocket_urlpatterns = [
+    path('ws/jobs/<job_id>', consumers.JobConsumer.as_asgi())
 ]
 
 if settings.DEBUG:
