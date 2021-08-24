@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-b3xoe-@_&50f5a9v0t=8!e84g=miygz4ylo@z!lfisodc@sk-=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -171,3 +171,5 @@ GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
 PAYPAL_MODE = "sandbox"
 PAYPAL_CLIENT_ID = os.environ['PAYPAL_CLIENT_ID']
 PAYPAL_CLIENT_SECRET = os.environ['PAYPAL_CLIENT_SECRET']
+
+NGROK_URL = os.environ['NGROK_URL']
