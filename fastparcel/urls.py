@@ -32,7 +32,7 @@ courier_urlpatterns = [
          name="job_complete"),
     path('jobs/archived/', courier_views.archived_jobs_page,
          name="archived_jobs"),
-    path('jobs/profile/', courier_views.profile_page,
+    path('profile/', courier_views.profile_page,
          name="profile"),
 
     path('api/jobs/available/', courier_apis.available_jobs_api,
