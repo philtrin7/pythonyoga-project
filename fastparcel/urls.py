@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from core import views
 
@@ -53,7 +54,9 @@ urlpatterns = [
     path('sign-out/', auth_views.LogoutView.as_view(next_page='/')),
     path('sign-up/', views.sign_up),
     path('customer/', include((customer_urlpatterns, 'customer'))),
-    path('courier/', include((courier_urlpatterns, 'courier')))
+    path('courier/', include((courier_urlpatterns, 'courier'))),
+    path('firebase-messaging-sw.js', (TemplateView.as_view(
+        template_name="firebase-messaging-sw.js", content_type="application/javascript",))),
 ]
 
 if settings.DEBUG:
