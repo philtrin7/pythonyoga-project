@@ -82,6 +82,24 @@
             })
             .catch((e) => window.alert("Directions request failed due to " + status));
     }
+
+    try {
+        const jobSocket = new WebSocket(
+            "ws://" + window.location.host + "/ws/jobs/{{ job.id }}/"
+        )
+
+        jobSocket.onmessage = function (e) {
+            var data = JSON.parse(e.data)
+            var job = data.job
+
+            if (job.courier_lat && job.courier_lng) {
+                var courierPosition = new google.maps.LatLng(job.courier_lat, job.courier_lng)
+                window.courierMarker.setPosition(courierPosition)
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
 </script>
 {% endblock head %}
 
