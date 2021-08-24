@@ -175,3 +175,11 @@ PAYPAL_CLIENT_SECRET = os.environ['PAYPAL_CLIENT_SECRET']
 NGROK_URL = os.environ['NGROK_URL']
 
 ASGI_APPLICATION = "fastparcel.asgi.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
