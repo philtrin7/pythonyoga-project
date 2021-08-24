@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.conf import settings
 from paypalrestsdk import configure
-from . import models
+
+from .models import *
 
 
 configure({
@@ -9,6 +10,16 @@ configure({
     "client_id": settings.PAYPAL_CLIENT_ID,
     "client_secret": settings.PAYPAL_CLIENT_SECRET,
 })
+
+
+class CourierAdmin(admin.ModelAdmin):
+    list_display = ['user_full_name', 'paypal_email', 'balance']
+
+    def user_full_name(self, obj):
+        return obj.user.get_full_name()
+
+    def balance(self, obj):
+        return round(sum(t.amount for t in Transaction.objects.filter(job__courier=obj, status=Transaction.IN_STATUS)) * 0.80, 2)
 
 
 class TransactionAdmin(admin.ModelAdmin):
@@ -27,8 +38,8 @@ class TransactionAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(models.Customer)
-admin.site.register(models.Courier)
-admin.site.register(models.Category)
-admin.site.register(models.Job)
-admin.site.register(models.Transaction, TransactionAdmin)
+admin.site.register(Customer)
+admin.site.register(Courier, CourierAdmin)
+admin.site.register(Category)
+admin.site.register(Job)
+admin.site.register(Transaction, TransactionAdmin)
