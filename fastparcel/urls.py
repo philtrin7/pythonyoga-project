@@ -40,7 +40,9 @@ courier_urlpatterns = [
     path('api/jobs/available/', courier_apis.available_jobs_api,
          name="available_jobs_api"),
     path('api/jobs/current/<id>/update/', courier_apis.current_job_update_api,
-         name="current_job_update_api")
+         name="current_job_update_api"),
+    path('api/fcm-token/update/', courier_apis.fcm_token_update_api,
+         name="fcm_token_update_api"),
 ]
 
 urlpatterns = [
