@@ -10,9 +10,23 @@
     {% load bootstrap4 %}
     {% bootstrap_css %}
     {% bootstrap_javascript jquery='full' %}
+    {% include 'load_firebase.html' %}
 
     <link rel="stylesheet" href="https://unpkg.com/bootoast@1.0.1/dist/bootoast.min.css" />
 
+    <script>
+        const messaging = firebase.messaging()
+        messaging.getToken({
+            validKey: "{{ FIREBASE_WEB_PUSH_CERT }}"
+        }).then((currentToken) => {
+            console.log(currentToken)
+            if (currentToken) {
+                fetch('{% url "courier:fcm_token_update_api" %}?fcm_token=' + currentToken)
+            }
+        }).catch((err) => {
+            console.log('An error occured while retrieving token: ', err)
+        })
+    </script>
     <script>
         let vh = window.innerHeight * 0.01;
 

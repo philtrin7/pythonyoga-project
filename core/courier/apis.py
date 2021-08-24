@@ -44,3 +44,14 @@ def current_job_update_api(request, id):
     return JsonResponse({
         "success": True
     })
+
+
+@csrf_exempt
+@login_required(login_url="/courier/sign-in/")
+def fcm_token_update_api(request):
+    request.user.courier.fcm_token = request.GET.get('fcm_token')
+    request.user.courier.save()
+
+    return JsonResponse({
+        "success": True
+    })
