@@ -60,7 +60,7 @@ urlpatterns = [
 ]
 
 websocket_urlpatterns = [
-    path('ws/jobs/<job_id>', consumers.JobConsumer.as_asgi())
+    path('ws/jobs/<job_id>/', consumers.JobConsumer.as_asgi())
 ]
 
 if settings.DEBUG:

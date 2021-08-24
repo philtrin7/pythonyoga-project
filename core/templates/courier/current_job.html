@@ -78,6 +78,24 @@
                 }
 
                 map.panTo(courierPosition)
+
+                try {
+                    const jobSocket = new WebSocket(
+                        "ws://" + window.location.host + "/ws/jobs/{{ job.id }}/"
+                    )
+
+                    jobSocket.onopen = function (openEvent) {
+                        console.log("WebSocket OPEN: " + JSON.stringify(openEvent, null, 4));
+                        jobSocket.send(JSON.stringify({
+                            job: {
+                                courier_lat: pos.coords.latitude,
+                                courier_lng: pos.coords.longitude,
+                            }
+                        }))
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
             },
             pos => console.log(pos))
     }
