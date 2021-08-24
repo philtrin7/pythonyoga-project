@@ -23,6 +23,7 @@ class Courier(models.Model):
     lat = models.FloatField(default=0)
     lng = models.FloatField(default=0)
     paypal_email = models.EmailField(max_length=255, blank=True)
+    fcm_token = models.TextField(blank=True)
 
     def __str__(self):
         return self.user.get_full_name()
@@ -118,7 +119,8 @@ class Transaction(models.Model):
     stripe_payment_intent_id = models.CharField(max_length=255, unique=True)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     amount = models.FloatField(default=0)
-    status = models.CharField(max_length=20, choices=STATUSES, default=IN_STATUS)
+    status = models.CharField(
+        max_length=20, choices=STATUSES, default=IN_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

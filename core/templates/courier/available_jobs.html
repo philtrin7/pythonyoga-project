@@ -58,6 +58,10 @@
             window.location.href = "/courier/jobs/available/" + job.id + "/"
         })
     }
+
+    messaging.onMessage((payload) => {
+        window.location.reload()
+    })
 </script>
 
 <style>
