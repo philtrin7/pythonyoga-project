@@ -122,6 +122,6 @@ def payout_method_page(request):
             messages.success(request, "Payout address is updated.")
             return redirect(reverse('courier:profile'))
 
-    return render(request, 'courier/payment_method.html', {
+    return render(request, 'courier/payout_method.html', {
         'payout_form': payout_form
     })
