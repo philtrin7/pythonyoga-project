@@ -25,6 +25,9 @@
     var deliveryLat = parseFloat("{{ job.delivery_lat }}")
     var deliveryLng = parseFloat("{{ job.delivery_lng }}")
 
+    var courierLat = parseFloat("{{ job.courier.lat }}")
+    var courierLng = parseFloat("{{ job.courier.lng }}")
+
     function initMap() {
         const directionsService = new google.maps.DirectionsService();
         const directionsRenderer = new google.maps.DirectionsRenderer({
@@ -68,6 +71,13 @@
                         icon: "{% static 'img/end.png' %}"
                     })
                 }
+
+                window.courierMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(courierLat, courierLng),
+                    map,
+                    icon: "{% static 'img/courier.png' %}"
+                })
+
                 directionsRenderer.setDirections(response)
             })
             .catch((e) => window.alert("Directions request failed due to " + status));
